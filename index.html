@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Client-Side Routing (Local)</title>
+  </head>
+  <body>
+    <ul>
+      <li><a href="#home">Home</a></li>
+      <li><a href="#page1">Page 1</a></li>
+      <li><a href="#page2">Page 2</a></li>
+    </ul>
+
+    <div id="content">
+      <!-- Content will be loaded here -->
+    </div>
+
+    <script>
+      function loadContent(pageId) {
+        fetch("pages/" + pageId + ".html")
+          .then((response) => response.text())
+          .then((data) => {
+            document.getElementById("content").innerHTML = data;
+          })
+          .catch((error) => {
+            console.error("페이지를 로드하는 중에 오류가 발생했습니다.", error);
+          });
+      }
+      // a태그의 hash 값을 받아와서 페이지를 content를 바꿔준다.
+      function handleHashChange() {
+        const hash = window.location.hash.substr(1);
+        loadContent(hash);
+      }
+
+      // 초기 페이지 로드
+      handleHashChange();
+
+      // 해시 변경 이벤트 처리
+      window.addEventListener("hashchange", function () {
+        handleHashChange();
+      });
+
+      // 링크 클릭 이벤트 처리
+      document.querySelectorAll("a").forEach(function (link) {
+        link.addEventListener("click", function (e) {
+          e.preventDefault();
+          const pageId = this.hash.substr(1);
+          window.location.hash = pageId;
+        });
+      });
+      // 초기 페이지 로드 시에 hash가 비어있으면 홈 페이지로 설정
+      document.addEventListener("DOMContentLoaded", function () {
+        if (!window.location.hash) {
+          window.location.hash = "home";
+        }
+      });
+    </script>
+  </body>
+</html>
